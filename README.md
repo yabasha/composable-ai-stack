@@ -150,3 +150,9 @@ Run:
 bun run check:versions
 ```
 CI will fail if any pinned dependency versions drift.
+
+---
+
+## Author
+
+Created by **Bashar Ayyash** — [yabasha.dev](https://yabasha.dev)
