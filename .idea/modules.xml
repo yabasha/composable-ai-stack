@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/cas-app.iml" filepath="$PROJECT_DIR$/.idea/cas-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/composable-ai-stack.iml" filepath="$PROJECT_DIR$/.idea/composable-ai-stack.iml" />
     </modules>
   </component>
 </project>
