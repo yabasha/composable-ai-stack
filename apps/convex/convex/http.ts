@@ -1,4 +1,5 @@
 import { httpRouter } from "convex/server";
+import { httpAction } from "./_generated/server";
 
 const http = httpRouter();
 
@@ -7,7 +8,9 @@ const http = httpRouter();
 http.route({
   path: "/stripe/webhook",
   method: "POST",
-  handler: async () => new Response("ok", { status: 200 }),
+  handler: httpAction(async (_ctx, _request) => {
+    return new Response("ok", { status: 200 });
+  }),
 });
 
 export default http;
