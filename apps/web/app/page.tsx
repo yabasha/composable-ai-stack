@@ -1,13 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Hero, FeaturesGrid, Architecture, Footer } from "@/components/landing";
 
 export default function Page() {
   return (
-    <main className="p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">AI Swiss Army Template</h1>
-      <p className="text-muted-foreground">
-        Next.js + Tailwind + shadcn/ui, Convex-first backend, optional ElysiaJS gateway.
-      </p>
-      <Button>shadcn Button</Button>
+    <main className="min-h-screen">
+      <Hero />
+      <FeaturesGrid />
+      <Architecture />
+      <Footer />
     </main>
   );
 }

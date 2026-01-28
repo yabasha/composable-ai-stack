@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Swiss Army Template",
-  description: "Next.js + Convex + Bun + optional ElysiaJS"
+  title: "Composable AI Stack",
+  description: "A production-ready monorepo for building AI-powered applications"
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
