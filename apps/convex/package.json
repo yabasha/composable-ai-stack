@@ -1,0 +1,16 @@
+{
+  "name": "convex",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "convex": "1.31.6"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
