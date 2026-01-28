@@ -1,4 +1,4 @@
-# AI Swiss Army Template — Use Cases
+# Composable AI Stack (CAS) — Use Cases
 
 This template is designed to be a **reusable monorepo starter** for building AI‑integrated SaaS apps in 2026:
 - **Next.js + Tailwind + shadcn/ui** for the product UI
