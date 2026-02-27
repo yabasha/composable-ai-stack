@@ -1,11 +1,13 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 /**
- * Minimal schema to track membership plan status.
- * Expand as needed (workspaces, roles, billing, etc.)
+ * Schema includes auth tables from @convex-dev/auth plus app-specific tables.
  */
 export default defineSchema({
+  ...authTables,
+  
   users: defineTable({
     email: v.string(),
     stripeCustomerId: v.optional(v.string()),
