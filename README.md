@@ -104,7 +104,7 @@ If you want a dedicated webhook gateway with custom middleware/rate limiting, us
 - `bun run dev:convex` — Convex only
 - `bun run dev:api` — Elysia only
 - `bun run build` — build all buildable apps
-- `bun run eval` — run eval harness (placeholder)
+- `bun run eval` — run eval harness
 
 ---
 
@@ -150,6 +150,77 @@ Run:
 bun run check:versions
 ```
 CI will fail if any pinned dependency versions drift.
+
+---
+
+## Guardrail Pattern
+
+The `@acme/ai` package provides a guardrail pattern for safe, validated LLM calls:
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Input     │────▶│    Zod      │────▶│ Moderation  │────▶│  LLM Call   │
+│   (raw)     │     │ Validation  │     │   Hook      │     │             │
+└─────────────┘     └─────────────┘     └─────────────┘     └──────┬──────┘
+                                                                   │
+                    ┌─────────────┐     ┌─────────────┐           │
+                    │   Output    │◀────│    Zod      │◀──────────┘
+                    │  (typed)    │     │ Validation  │
+                    └─────────────┘     └─────────────┘
+```
+
+### Usage Example
+
+```ts
+import { z } from 'zod';
+import { runWithGuardrails, openai, DEFAULT_MODELS } from '@acme/ai';
+
+const inputSchema = z.object({ message: z.string().max(500) });
+const outputSchema = z.object({ reply: z.string(), confidence: z.number() });
+
+const result = await runWithGuardrails(
+  openai(DEFAULT_MODELS.openai),
+  'Generate a helpful reply',
+  { message: 'Hello, I need help!' },
+  {
+    name: 'support-reply',
+    inputSchema,
+    outputSchema,
+    moderationHook: async (input) => input.message.length > 0,
+  }
+);
+
+console.log(result.output); // { reply: '...', confidence: 0.95 }
+console.log(result.traceId); // Langfuse trace ID
+```
+
+All guardrail runs are automatically traced to Langfuse with full input/output logging.
+
+---
+
+## Observability
+
+This stack uses **Langfuse** for LLM observability and tracing:
+
+### Required Environment Variables
+
+```bash
+# LLM Providers
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-...
+
+# Langfuse (Observability)
+LANGFUSE_PUBLIC_KEY=pk-...
+LANGFUSE_SECRET_KEY=sk-...
+LANGFUSE_BASE_URL=https://cloud.langfuse.com  # Optional: use your self-hosted instance
+```
+
+### Features
+
+- **Automatic tracing**: Every LLM call via `tracedGenerate()` or `runWithGuardrails()` is traced
+- **Generation tracking**: Prompts, outputs, token usage, and latency are captured
+- **Score logging**: Eval scores are sent to Langfuse for monitoring
+- **Self-hosted option**: Run your own Langfuse instance by changing `LANGFUSE_BASE_URL`
 
 ---
 
