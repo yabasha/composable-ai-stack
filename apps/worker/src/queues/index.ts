@@ -2,16 +2,18 @@ import { Queue, type ConnectionOptions } from "bullmq";
 
 /**
  * Parse REDIS_URL into IORedis-compatible connection options.
- * Supports redis:// and rediss:// URLs.
+ * Supports redis:// and rediss:// URLs, including DB index in pathname (e.g. redis://host:6379/2).
  */
 export function getRedisConnection(): ConnectionOptions {
   const url = process.env.REDIS_URL ?? "redis://localhost:6379";
   const parsed = new URL(url);
+  const db = parsed.pathname?.replace("/", "");
   return {
     host: parsed.hostname,
     port: Number(parsed.port) || 6379,
     password: parsed.password || undefined,
     username: parsed.username || undefined,
+    ...(db ? { db: Number(db) } : {}),
     ...(parsed.protocol === "rediss:" ? { tls: {} } : {}),
   };
 }
