@@ -7,6 +7,9 @@
     "eval": "bun src/eval.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "@acme/ai": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "5.9.3"
   }
