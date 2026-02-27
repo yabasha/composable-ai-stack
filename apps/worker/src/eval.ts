@@ -12,4 +12,7 @@ async function runEvalFlow() {
   console.log('[eval runner] Langfuse trace ID:', traceId);
 }
 
-runEvalFlow().catch(console.error);
+runEvalFlow().catch((err) => {
+  console.error('[eval runner] Fatal error:', err);
+  process.exit(1);
+});

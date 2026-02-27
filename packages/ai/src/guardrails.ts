@@ -23,9 +23,10 @@ export async function runWithGuardrails<TInput, TOutput>(
     if (!safe) throw new Error(`[guardrail] Input failed moderation for: ${options.name}`);
   }
   const trace = langfuse.trace({ name: options.name, input: validatedInput });
-  const generation = trace.generation({ name: 'llm-call', model: String(model), input: prompt });
+  const fullPrompt = `${prompt}\n\nInput:\n${JSON.stringify(validatedInput, null, 2)}`;
+  const generation = trace.generation({ name: 'llm-call', model: String(model), input: fullPrompt });
   try {
-    const { object } = await generateObject({ model, schema: options.outputSchema, prompt, maxTokens: options.maxTokens ?? 2048 });
+    const { object } = await generateObject({ model, schema: options.outputSchema, prompt: fullPrompt, maxTokens: options.maxTokens ?? 2048 });
     const validatedOutput = options.outputSchema.parse(object);
     generation.end({ output: validatedOutput, level: 'DEFAULT' });
     trace.update({ output: validatedOutput });

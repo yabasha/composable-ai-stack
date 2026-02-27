@@ -9,11 +9,18 @@ export async function tracedGenerate(
 ): Promise<{ text: string; traceId: string }> {
   const trace = langfuse.trace({ name: options?.name ?? 'generate' });
   const generation = trace.generation({ name: 'llm-call', model: String(model), input: prompt });
-  const { text } = await generateText({ model, prompt, maxTokens: options?.maxTokens ?? 1024 });
-  generation.end({ output: text });
-  trace.update({ output: text });
-  await langfuse.flushAsync();
-  return { text, traceId: trace.id };
+  try {
+    const { text } = await generateText({ model, prompt, maxTokens: options?.maxTokens ?? 1024 });
+    generation.end({ output: text });
+    trace.update({ output: text });
+    await langfuse.flushAsync();
+    return { text, traceId: trace.id };
+  } catch (err) {
+    generation.end({ level: 'ERROR', statusMessage: String(err) });
+    trace.update({ output: null, metadata: { error: String(err) } });
+    await langfuse.flushAsync();
+    throw err;
+  }
 }
 
 export { streamText };
