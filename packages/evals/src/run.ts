@@ -12,4 +12,7 @@ async function main() {
   summarizeResults(results);
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error('[evals] Fatal error:', err);
+  process.exit(1);
+});

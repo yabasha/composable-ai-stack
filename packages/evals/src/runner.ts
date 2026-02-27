@@ -49,11 +49,27 @@ export async function runEval(
       const durationMs = Date.now() - startTime;
       console.error(`✗ Case ${testCase.id}:`, err);
 
+      // Create a Langfuse trace for the failed case so it appears in the dashboard
+      const failTrace = langfuse.trace({
+        name: `eval-${definition.name}-${testCase.id}`,
+        input: testCase.input,
+        metadata: { error: String(err), evalCase: testCase.id },
+      });
+      failTrace.update({ output: null, level: 'ERROR', statusMessage: String(err) });
+
+      // Log explicit failure score to Langfuse
+      langfuse.score({
+        traceId: failTrace.id,
+        name: `${definition.name}-error`,
+        value: 0,
+        comment: String(err),
+      });
+
       results.push({
         caseId: testCase.id,
         output: '',
         scores: [{ name: 'error', value: 0, comment: String(err) }],
-        traceId: '',
+        traceId: failTrace.id,
         durationMs,
       });
     }
