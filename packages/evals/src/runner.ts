@@ -55,7 +55,7 @@ export async function runEval(
         input: testCase.input,
         metadata: { error: String(err), evalCase: testCase.id },
       });
-      failTrace.update({ output: null, level: 'ERROR', statusMessage: String(err) });
+      failTrace.update({ output: null, metadata: { error: String(err), status: 'ERROR' } });
 
       // Log explicit failure score to Langfuse
       langfuse.score({
