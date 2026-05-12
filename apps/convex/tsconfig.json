@@ -10,5 +10,8 @@
     "convex",
     "**/*.ts",
     "**/*.tsx"
+  ],
+  "exclude": [
+    "convex/**/*.test.ts"
   ]
 }

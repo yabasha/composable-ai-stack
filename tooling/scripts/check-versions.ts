@@ -74,7 +74,8 @@ const PINS = {
       "@auth/core": "0.37.4"
     },
     devDependencies: {
-      typescript: "5.9.3"
+      typescript: "5.9.3",
+      "convex-test": "0.0.41"
     }
   },
   config: {
