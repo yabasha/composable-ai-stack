@@ -4,7 +4,11 @@
     "outDir": "dist",
     "types": [
       "@types/bun"
-    ]
+    ],
+    "paths": {
+      "@acme/config": ["../../packages/config/src/index.ts"],
+      "@acme/config/schema": ["../../packages/config/src/schema.ts"]
+    }
   },
   "include": [
     "src"
