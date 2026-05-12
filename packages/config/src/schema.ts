@@ -35,7 +35,7 @@ export const envSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: [key],
-          message: `${key} is required when NODE_ENV=production`
+          message: `Required when NODE_ENV=production`
         });
       }
     }
@@ -43,8 +43,8 @@ export const envSchema = z
 
 export type Env = z.infer<typeof envSchema>;
 
-export function parseEnv(input: Record<string, unknown>, mode: string): Env {
-  const candidate = { ...input, NODE_ENV: mode ?? input.NODE_ENV };
+export function parseEnv(input: Record<string, unknown>, mode: Mode | string): Env {
+  const candidate = { ...input, NODE_ENV: mode };
   const result = envSchema.safeParse(candidate);
   if (!result.success) {
     const detail = result.error.issues

@@ -41,6 +41,12 @@ describe("parseEnv", () => {
     expect(() => parseEnv({ NODE_ENV: "staging" }, "staging")).toThrow(/NODE_ENV/);
   });
 
+  test("rejects invalid NEXT_PUBLIC_CONVEX_URL", () => {
+    expect(() =>
+      parseEnv({ ...validProd, NEXT_PUBLIC_CONVEX_URL: "not-a-url" }, "production")
+    ).toThrow(/NEXT_PUBLIC_CONVEX_URL/);
+  });
+
   test("coerces numeric string envs", () => {
     const env = parseEnv(
       { NODE_ENV: "development", API_PORT: "4000", WEBHOOK_TOLERANCE_SECONDS: "60" },
