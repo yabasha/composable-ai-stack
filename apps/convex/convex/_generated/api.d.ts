@@ -1,3 +1,9 @@
+/**
+ * NOTE: Hand-edited stop-gap. `convex codegen` was not runnable locally in
+ * this worktree (no CONVEX_DEPLOYMENT). The next real codegen run will
+ * regenerate this file from the function modules and may produce harmless
+ * formatting/import-style differences. Functionality is preserved.
+ */
 /* eslint-disable */
 /**
  * Generated `api` utility.

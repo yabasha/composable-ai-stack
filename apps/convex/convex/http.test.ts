@@ -139,5 +139,6 @@ describe("POST /stripe/webhook", () => {
         .first()
     );
     expect(user?.planStatus).toBe("canceled");
+    expect(user?.plan).toBeUndefined();
   });
 });
