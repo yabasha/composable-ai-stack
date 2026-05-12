@@ -69,7 +69,9 @@ const PINS = {
   },
   convex: {
     dependencies: {
-      convex: "1.31.6"
+      convex: "1.31.6",
+      "@convex-dev/auth": "0.0.92",
+      "@auth/core": "0.34.3"
     },
     devDependencies: {
       typescript: "5.9.3"
