@@ -7,10 +7,7 @@ export const testModules = {
   "./http.ts": () => import("../http"),
   "./schema.ts": () => import("../schema"),
   "./users.ts": () => import("../users"),
-  // @ts-ignore Task 13 will create `../stripe`; until then the import fails at
-  // runtime and the catch yields an empty module, which is fine for tests that
-  // don't touch Stripe.
-  "./stripe.ts": () => import("../stripe").catch(() => ({})),
+  "./stripe.ts": () => import("../stripe"),
   "./_generated/api.js": () => import("../_generated/api"),
   "./_generated/server.js": () => import("../_generated/server")
 };
