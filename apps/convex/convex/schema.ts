@@ -2,6 +2,11 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { authTables } from "@convex-dev/auth/server";
 
+/**
+ * Schema includes auth tables from @convex-dev/auth plus app-specific tables.
+ * When extending the users table, we must re-declare all default auth fields
+ * since overriding replaces the entire table definition.
+ */
 export default defineSchema({
   ...authTables,
 
@@ -18,8 +23,8 @@ export default defineSchema({
     isAnonymous: v.optional(v.boolean()),
 
     stripeCustomerId: v.optional(v.string()),
-    plan: v.optional(v.string()),
-    planStatus: v.optional(v.string()),
+    plan: v.optional(v.string()), // e.g. "free" | "pro"
+    planStatus: v.optional(v.string()), // e.g. "active" | "past_due" | "canceled"
     planUpdatedAt: v.optional(v.number()),
 
     createdAt: v.number()

@@ -8,7 +8,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@acme/config": "workspace:*"
+    "@acme/config": "workspace:*",
+    "@acme/ai": "workspace:*",
+    "bullmq": "^5.70.1"
   },
   "devDependencies": {
     "typescript": "5.9.3"
