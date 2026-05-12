@@ -4,6 +4,7 @@ import { env } from "../env";
 const isProd = env.NODE_ENV === "production";
 
 export const securityHeaders = new Elysia({ name: "security-headers" }).onAfterHandle(
+  { as: "global" },
   ({ set }) => {
     const headers = (set.headers ??= {});
     headers["x-content-type-options"] = "nosniff";

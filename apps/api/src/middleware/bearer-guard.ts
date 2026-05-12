@@ -12,7 +12,7 @@ function constantTimeEqual(a: string, b: string): boolean {
 
 export const bearerGuard = new Elysia({ name: "bearer-guard" })
   .use(bearer())
-  .onBeforeHandle(({ bearer, set }) => {
+  .onBeforeHandle({ as: "global" }, ({ bearer, set }) => {
     if (!env.API_BEARER_TOKEN) {
       set.status = 500;
       return { error: { code: "API_BEARER_TOKEN_NOT_CONFIGURED" } };

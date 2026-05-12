@@ -15,6 +15,7 @@ export function rateLimit(opts: RateLimitOptions = {}) {
   const store = new Map<string, Bucket>();
 
   return new Elysia({ name: `rate-limit:${max}:${windowMs}` }).onBeforeHandle(
+    { as: "global" },
     ({ request, set }) => {
       const auth = request.headers.get("authorization");
       const bearer = auth?.toLowerCase().startsWith("bearer ") ? auth.slice(7) : null;
