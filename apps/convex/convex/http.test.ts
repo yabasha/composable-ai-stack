@@ -6,9 +6,11 @@ import { testModules } from "./_lib/test-modules";
 
 const SECRET = "whsec_test_secret_value";
 
-function signedRequest(body: string, secret: string): Request {
+async function signedRequest(body: string, secret: string): Promise<Request> {
   const stripe = new Stripe("sk_test_x", { apiVersion: "2026-04-22.dahlia" });
-  const header = stripe.webhooks.generateTestHeaderString({ payload: body, secret });
+  // Bun resolves stripe's "worker" export, which only provides SubtleCrypto
+  // (async-only). Use the async helper to avoid the sync HMAC error.
+  const header = await stripe.webhooks.generateTestHeaderStringAsync({ payload: body, secret });
   return new Request("https://convex.example/stripe/webhook", {
     method: "POST",
     headers: { "stripe-signature": header, "content-type": "application/json" },
@@ -50,7 +52,7 @@ describe("POST /stripe/webhook", () => {
   test("returns 400 when the signature is invalid", async () => {
     const t = convexTest(schema, testModules);
     const body = baseEvent();
-    const req = signedRequest(body, "whsec_wrong_secret");
+    const req = await signedRequest(body, "whsec_wrong_secret");
     const res = await t.fetch("/stripe/webhook", {
       method: "POST",
       headers: Object.fromEntries(req.headers.entries()),
@@ -69,7 +71,7 @@ describe("POST /stripe/webhook", () => {
       })
     );
     const body = baseEvent();
-    const req = signedRequest(body, SECRET);
+    const req = await signedRequest(body, SECRET);
     const res = await t.fetch("/stripe/webhook", {
       method: "POST",
       headers: Object.fromEntries(req.headers.entries()),
@@ -96,13 +98,13 @@ describe("POST /stripe/webhook", () => {
       })
     );
     const body = baseEvent();
-    const req1 = signedRequest(body, SECRET);
+    const req1 = await signedRequest(body, SECRET);
     await t.fetch("/stripe/webhook", {
       method: "POST",
       headers: Object.fromEntries(req1.headers.entries()),
       body
     });
-    const req2 = signedRequest(body, SECRET);
+    const req2 = await signedRequest(body, SECRET);
     const res2 = await t.fetch("/stripe/webhook", {
       method: "POST",
       headers: Object.fromEntries(req2.headers.entries()),
@@ -123,7 +125,7 @@ describe("POST /stripe/webhook", () => {
       })
     );
     const body = baseEvent({ id: "evt_test_2", type: "customer.subscription.deleted" });
-    const req = signedRequest(body, SECRET);
+    const req = await signedRequest(body, SECRET);
     const res = await t.fetch("/stripe/webhook", {
       method: "POST",
       headers: Object.fromEntries(req.headers.entries()),
