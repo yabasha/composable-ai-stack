@@ -1,4 +1,4 @@
-import { test, expect, describe, beforeEach } from "bun:test";
+import { test, expect, describe, beforeEach, afterEach } from "bun:test";
 import { NextRequest } from "next/server";
 import { middleware } from "./middleware";
 
@@ -7,9 +7,18 @@ function makeReq(path = "/"): NextRequest {
 }
 
 describe("middleware CSP", () => {
+  const originalEnv = { ...process.env };
+
   beforeEach(() => {
     process.env.NODE_ENV = "development";
     process.env.NEXT_PUBLIC_CONVEX_URL = "https://example.convex.cloud";
+  });
+
+  afterEach(() => {
+    for (const key of Object.keys(process.env)) {
+      delete process.env[key];
+    }
+    Object.assign(process.env, originalEnv);
   });
 
   test("sets a nonce on the request and CSP on the response", async () => {
@@ -33,11 +42,6 @@ describe("middleware CSP", () => {
 
   test("production CSP omits 'unsafe-eval'", async () => {
     process.env.NODE_ENV = "production";
-    process.env.STRIPE_SECRET_KEY = "sk_test_x";
-    process.env.STRIPE_WEBHOOK_SECRET = "whsec_x";
-    process.env.CONVEX_DEPLOYMENT = "prod:abc";
-    process.env.NEXT_PUBLIC_APP_URL = "https://app.example.com";
-    process.env.API_BEARER_TOKEN = "a".repeat(32);
     const res = await middleware(makeReq("/"));
     const csp = res.headers.get("content-security-policy")!;
     expect(csp).not.toContain("'unsafe-eval'");

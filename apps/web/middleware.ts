@@ -1,5 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { envSchema } from "@acme/config/schema";
+import { z } from "zod";
+
+const middlewareEnv = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  NEXT_PUBLIC_CONVEX_URL: z.string().url().optional()
+});
 
 function makeNonce(): string {
   const bytes = new Uint8Array(16);
@@ -16,7 +21,7 @@ function convexWss(url: string | undefined): string {
 export function middleware(req: NextRequest) {
   // Parse env per-request — Edge runtime is fast, this keeps test mocking simple.
   // Production schema enforcement happens at app boot via @acme/config (Node).
-  const env = envSchema.parse({ ...process.env });
+  const env = middlewareEnv.parse(process.env);
   const nonce = makeNonce();
   const isProd = env.NODE_ENV === "production";
   const convexHttp = env.NEXT_PUBLIC_CONVEX_URL ?? "";
