@@ -16,8 +16,19 @@ export type RateLimitOptions = {
 export function rateLimit(opts: RateLimitOptions = {}) {
   const max = opts.max ?? 60;
   const windowMs = opts.windowMs ?? 60_000;
+  if (!Number.isInteger(max) || max < 1) {
+    throw new RangeError("rateLimit: `max` must be an integer >= 1");
+  }
+  if (!Number.isInteger(windowMs) || windowMs < 1) {
+    throw new RangeError("rateLimit: `windowMs` must be an integer >= 1");
+  }
   const trustProxy = opts.trustProxy ?? false;
   const store = new Map<string, Bucket>();
+  // Periodic sweep so one-off keys (spoofed bearers, rotating IPs) don't grow
+  // the store unboundedly between accesses. Cleared on shutdown by GC when the
+  // Elysia instance is collected.
+  const SWEEP_EVERY_WRITES = 500;
+  let writesSinceSweep = 0;
 
   return new Elysia({ name: `rate-limit:${max}:${windowMs}` }).onBeforeHandle(
     { as: "global" },
@@ -30,6 +41,12 @@ export function rateLimit(opts: RateLimitOptions = {}) {
       const key = bearer ?? xff ?? "anonymous";
 
       const now = Date.now();
+      if (++writesSinceSweep >= SWEEP_EVERY_WRITES) {
+        writesSinceSweep = 0;
+        for (const [k, v] of store) {
+          if (v.resetAt <= now) store.delete(k);
+        }
+      }
       const bucket = store.get(key);
       if (!bucket || bucket.resetAt <= now) {
         store.set(key, { count: 1, resetAt: now + windowMs });

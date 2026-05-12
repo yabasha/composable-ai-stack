@@ -16,9 +16,12 @@ try {
   throw new Error(`SITE_URL must be a valid absolute URL (got: ${rawSiteUrl})`);
 }
 
-if (parsedSiteUrl.protocol !== "https:" && parsedSiteUrl.hostname !== "localhost") {
+const isHttps = parsedSiteUrl.protocol === "https:";
+const isLocalHttp =
+  parsedSiteUrl.hostname === "localhost" && parsedSiteUrl.protocol === "http:";
+if (!isHttps && !isLocalHttp) {
   throw new Error(
-    `SITE_URL must use https outside local development (got: ${parsedSiteUrl.protocol}//${parsedSiteUrl.host})`
+    `SITE_URL must be https, or http://localhost for local development (got: ${parsedSiteUrl.protocol}//${parsedSiteUrl.host})`
   );
 }
 

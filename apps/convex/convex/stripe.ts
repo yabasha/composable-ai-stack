@@ -54,7 +54,13 @@ export const applySubscriptionChange = internalMutation({
       .query("users")
       .withIndex("by_stripe_customer", (q) => q.eq("stripeCustomerId", stripeCustomerId))
       .first();
-    if (!user) return;
+    if (!user) {
+      // Fail loud so the webhook returns non-2xx and Stripe retries. Silent
+      // no-op would let the account drift permanently out of sync with Stripe.
+      throw new Error(
+        `No user linked to Stripe customer ${stripeCustomerId}`
+      );
+    }
     await ctx.db.patch(user._id, {
       planStatus: status,
       plan: plan ?? undefined,
