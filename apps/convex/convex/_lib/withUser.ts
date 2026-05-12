@@ -8,10 +8,10 @@ type Ctx = QueryCtx | MutationCtx;
 /**
  * Returns the authenticated user's id, or throws `UNAUTHENTICATED`.
  *
- * Looks at Convex Auth's session first, then falls back to
- * `ctx.auth.getUserIdentity()` + the `users.by_token` index. The fallback path
- * is what makes this guard testable via `convex-test`'s `withIdentity` helper,
- * which injects an identity without spinning up a real Convex Auth session.
+ * In production, `getAuthUserId(ctx)` always returns for an authenticated
+ * caller and the by_token fallback below is unused. The fallback exists so
+ * `convex-test`'s `withIdentity` helper can drive this guard without spinning
+ * up real Convex Auth sessions.
  */
 export async function requireUser(ctx: Ctx): Promise<Id<"users">> {
   const direct = await getAuthUserId(ctx);
