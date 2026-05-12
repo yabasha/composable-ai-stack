@@ -1,4 +1,4 @@
-import { test, expect, describe, beforeEach } from "bun:test";
+import { test, expect, describe, beforeEach, afterEach } from "bun:test";
 import { convexTest } from "convex-test";
 import Stripe from "stripe";
 import schema from "./schema";
@@ -33,10 +33,23 @@ const baseEvent = (overrides: Record<string, unknown> = {}) =>
   });
 
 describe("POST /stripe/webhook", () => {
+  const prevEnv = {
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL
+  };
+
   beforeEach(() => {
     process.env.STRIPE_WEBHOOK_SECRET = SECRET;
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NEXT_PUBLIC_CONVEX_URL = "https://example.convex.cloud";
+  });
+
+  afterEach(() => {
+    for (const [k, v] of Object.entries(prevEnv)) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
   });
 
   test("returns 400 when Stripe-Signature is missing", async () => {

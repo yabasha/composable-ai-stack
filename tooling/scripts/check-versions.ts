@@ -108,7 +108,7 @@ for (const [dep, ver] of Object.entries(PINS.web.dependencies)) {
   assertEq(`apps/web dependency ${dep}`, webPkg.dependencies?.[dep], ver);
 }
 for (const [dep, ver] of Object.entries(PINS.web.devDependencies)) {
-  assertEq(`apps/web devDependency ${dep}`, getDep(webPkg, dep), ver);
+  assertEq(`apps/web devDependency ${dep}`, webPkg.devDependencies?.[dep], ver);
 }
 
 const apiPkg = readJSON(join(ROOT, "apps", "api", "package.json"));
@@ -116,7 +116,7 @@ for (const [dep, ver] of Object.entries(PINS.api.dependencies)) {
   assertEq(`apps/api dependency ${dep}`, apiPkg.dependencies?.[dep], ver);
 }
 for (const [dep, ver] of Object.entries(PINS.api.devDependencies)) {
-  assertEq(`apps/api devDependency ${dep}`, getDep(apiPkg, dep), ver);
+  assertEq(`apps/api devDependency ${dep}`, apiPkg.devDependencies?.[dep], ver);
 }
 
 const convexPkg = readJSON(join(ROOT, "apps", "convex", "package.json"));
@@ -124,7 +124,7 @@ for (const [dep, ver] of Object.entries(PINS.convex.dependencies)) {
   assertEq(`apps/convex dependency ${dep}`, convexPkg.dependencies?.[dep], ver);
 }
 for (const [dep, ver] of Object.entries(PINS.convex.devDependencies)) {
-  assertEq(`apps/convex devDependency ${dep}`, getDep(convexPkg, dep), ver);
+  assertEq(`apps/convex devDependency ${dep}`, convexPkg.devDependencies?.[dep], ver);
 }
 
 const configPkg = readJSON(join(ROOT, "packages", "config", "package.json"));

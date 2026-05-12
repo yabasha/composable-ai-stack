@@ -32,19 +32,21 @@ describe("middleware CSP", () => {
     expect(csp).toContain(`style-src 'self' 'nonce-${nonce}'`);
   });
 
-  test("development CSP includes 'unsafe-eval' and ws://localhost", async () => {
+  test("development CSP includes 'unsafe-eval' and ws://localhost; omits upgrade-insecure-requests", async () => {
     process.env.NODE_ENV = "development";
     const res = await middleware(makeReq("/"));
     const csp = res.headers.get("content-security-policy")!;
     expect(csp).toContain("'unsafe-eval'");
     expect(csp).toContain("ws://localhost:*");
+    expect(csp).not.toContain("upgrade-insecure-requests");
   });
 
-  test("production CSP omits 'unsafe-eval'", async () => {
+  test("production CSP omits 'unsafe-eval' and includes upgrade-insecure-requests", async () => {
     process.env.NODE_ENV = "production";
     const res = await middleware(makeReq("/"));
     const csp = res.headers.get("content-security-policy")!;
     expect(csp).not.toContain("'unsafe-eval'");
+    expect(csp).toContain("upgrade-insecure-requests");
   });
 
   test("CSP includes the Convex URL in connect-src", async () => {
