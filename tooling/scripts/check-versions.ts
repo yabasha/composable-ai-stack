@@ -74,6 +74,12 @@ const PINS = {
     devDependencies: {
       typescript: "5.9.3"
     }
+  },
+  config: {
+    dependencies: {
+      zod: "3.23.8",
+      dotenv: "16.4.7"
+    }
   }
 } as const;
 
@@ -106,6 +112,11 @@ for (const [dep, ver] of Object.entries(PINS.convex.dependencies)) {
 }
 for (const [dep, ver] of Object.entries(PINS.convex.devDependencies)) {
   assertEq(`apps/convex devDependency ${dep}`, getDep(convexPkg, dep), ver);
+}
+
+const configPkg = readJSON(join(ROOT, "packages", "config", "package.json"));
+for (const [dep, ver] of Object.entries(PINS.config.dependencies)) {
+  assertEq(`packages/config dependency ${dep}`, configPkg.dependencies?.[dep], ver);
 }
 
 console.log("✅ Version pins OK");
