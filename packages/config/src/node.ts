@@ -1,12 +1,14 @@
 import { parseEnv, type Env } from "./schema";
 
 if (process.env.NODE_ENV !== "production") {
-  // Best-effort .env loading in non-prod; ignore if dotenv is absent.
   try {
     const dotenv = await import("dotenv");
     dotenv.config();
-  } catch {
-    // dotenv is an optional runtime convenience; production deploys inject env directly.
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException)?.code;
+    if (code !== "ERR_MODULE_NOT_FOUND" && code !== "MODULE_NOT_FOUND") {
+      console.warn("[@acme/config] dotenv load failed:", err);
+    }
   }
 }
 
