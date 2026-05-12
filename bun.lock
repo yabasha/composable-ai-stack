@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "ai-swiss-army-template",
+      "dependencies": {
+        "zod": "3.23.8",
+      },
       "devDependencies": {
         "@types/node": "^25.0.10",
         "@types/react": "^19.2.10",
@@ -54,6 +57,7 @@
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "tailwind-merge": "^2.5.4",
+        "zod": "3.23.8",
       },
       "devDependencies": {
         "@eslint/eslintrc": "^3.3.3",
@@ -1220,8 +1224,6 @@
     "sharp/semver": ["semver@7.7.3", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q=="],
 
     "thread-stream/real-require": ["real-require@1.0.0", "", {}, "sha512-P4nbQYQfePJxRSmY+v/KINxVucm4NF3p3s7pJveMTtom52FR4YGltUQLB8idDXwDDWW+eYrWDFbuzUnjoWHF7g=="],
-
-    "zod-validation-error/zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
 
     "@typescript-eslint/typescript-estree/minimatch/brace-expansion": ["brace-expansion@2.0.2", "", { "dependencies": { "balanced-match": "^1.0.0" } }, "sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ=="],
   }

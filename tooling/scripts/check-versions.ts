@@ -52,7 +52,8 @@ const PINS = {
     dependencies: {
       next: "16.1.6",
       react: "19.2.4",
-      "react-dom": "19.2.4"
+      "react-dom": "19.2.4",
+      zod: "3.23.8"
     },
     devDependencies: {
       tailwindcss: "4.1.18",
