@@ -121,6 +121,8 @@ describe("POST /stripe/webhook", () => {
       ctx.db.insert("users", {
         email: "alice@example.com",
         stripeCustomerId: "cus_test_1",
+        planStatus: "active",
+        plan: "pro_monthly",
         createdAt: Date.now()
       })
     );

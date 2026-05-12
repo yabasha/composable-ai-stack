@@ -38,11 +38,13 @@ http.route({
       return new Response("invalid signature", { status: 400 });
     }
 
-    const fresh = await ctx.runMutation(internal.stripe.recordEvent, {
-      eventId: event.id,
-      type: event.type
+    // Check for replay BEFORE applying side effects. The marker is written at
+    // the end so a failed apply leaves the event eligible for Stripe retries
+    // instead of being silently swallowed.
+    const alreadyProcessed = await ctx.runQuery(internal.stripe.hasProcessedEvent, {
+      eventId: event.id
     });
-    if (!fresh) {
+    if (alreadyProcessed) {
       return new Response(JSON.stringify({ received: true, duplicate: true }), {
         status: 200,
         headers: { "content-type": "application/json" }
@@ -73,6 +75,12 @@ http.route({
       default:
         console.info("unhandled stripe event type", event.type);
     }
+
+    // Record only after the apply path completed successfully.
+    await ctx.runMutation(internal.stripe.recordEvent, {
+      eventId: event.id,
+      type: event.type
+    });
 
     return new Response(JSON.stringify({ received: true }), {
       status: 200,

@@ -1,13 +1,30 @@
 // SITE_URL is set per Convex deployment via `bunx convex env set SITE_URL <url>`
 // and lives in the Convex dashboard, not in @acme/config (it's only read here
 // and never reaches Next/Elysia/Worker).
-const domain = process.env.SITE_URL;
-if (!domain) {
+const rawSiteUrl = process.env.SITE_URL;
+if (!rawSiteUrl) {
   throw new Error(
     "SITE_URL is not set on this Convex deployment. " +
       "Run: bunx convex env set SITE_URL <https-url-of-your-deployment>"
   );
 }
+
+let parsedSiteUrl: URL;
+try {
+  parsedSiteUrl = new URL(rawSiteUrl);
+} catch {
+  throw new Error(`SITE_URL must be a valid absolute URL (got: ${rawSiteUrl})`);
+}
+
+if (parsedSiteUrl.protocol !== "https:" && parsedSiteUrl.hostname !== "localhost") {
+  throw new Error(
+    `SITE_URL must use https outside local development (got: ${parsedSiteUrl.protocol}//${parsedSiteUrl.host})`
+  );
+}
+
+// Normalize: use the origin (protocol + host[:port]) so trailing paths/slashes
+// can't silently change the JWT audience.
+const domain = parsedSiteUrl.origin;
 
 export default {
   providers: [

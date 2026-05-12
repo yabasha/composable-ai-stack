@@ -1000,7 +1000,9 @@ http.route({
     const stripe = getStripe();
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(
+      // Convex's runtime is Web-Crypto only — `constructEvent` fails with
+      // "SubtleCryptoProvider cannot be used in a synchronous context."
+      event = await stripe.webhooks.constructEventAsync(
         body,
         sig,
         env.STRIPE_WEBHOOK_SECRET,

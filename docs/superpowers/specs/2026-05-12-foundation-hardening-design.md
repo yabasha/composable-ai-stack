@@ -161,7 +161,7 @@ The same `http` router that mounts the Stripe webhook calls `auth.addHttpRoutes(
 
 ### CSP directives — production
 
-```
+```text
 default-src 'self';
 script-src 'self' 'nonce-{n}' 'strict-dynamic';
 style-src 'self' 'nonce-{n}';

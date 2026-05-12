@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { headers } from "next/headers";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -8,10 +7,10 @@ export const metadata: Metadata = {
   description: "A production-ready monorepo for building AI-powered applications"
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  // Nonce wired via middleware.ts; forks rendering <Script> tags pass this prop.
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
-  void nonce;
+// Nonce is wired through `x-nonce` by middleware.ts. Forks that render
+// `<Script>` tags should call `headers()` here and pass `nonce` to those tags,
+// which will switch this layout to dynamic rendering at that point.
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>

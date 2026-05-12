@@ -7,10 +7,15 @@ import { rateLimit } from "./middleware/rate-limit";
 import { bearerGuard } from "./middleware/bearer-guard";
 
 function mapStatus(code: string | number): number {
+  if (typeof code === "number") return code;
   switch (code) {
     case "VALIDATION":
     case "PARSE":
       return 400;
+    case "UNAUTHORIZED":
+      return 401;
+    case "FORBIDDEN":
+      return 403;
     case "NOT_FOUND":
       return 404;
     default:

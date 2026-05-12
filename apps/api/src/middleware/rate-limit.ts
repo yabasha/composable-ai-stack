@@ -7,11 +7,16 @@ type Bucket = { count: number; resetAt: number };
 export type RateLimitOptions = {
   max?: number;
   windowMs?: number;
+  // Set to true only when this process sits behind a trusted reverse proxy
+  // that rewrites `x-forwarded-for`. Raw values are client-controllable and
+  // would otherwise let callers spoof a different bucket on each request.
+  trustProxy?: boolean;
 };
 
 export function rateLimit(opts: RateLimitOptions = {}) {
   const max = opts.max ?? 60;
   const windowMs = opts.windowMs ?? 60_000;
+  const trustProxy = opts.trustProxy ?? false;
   const store = new Map<string, Bucket>();
 
   return new Elysia({ name: `rate-limit:${max}:${windowMs}` }).onBeforeHandle(
@@ -19,7 +24,9 @@ export function rateLimit(opts: RateLimitOptions = {}) {
     ({ request, set }) => {
       const auth = request.headers.get("authorization");
       const bearer = auth?.toLowerCase().startsWith("bearer ") ? auth.slice(7) : null;
-      const xff = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+      const xff = trustProxy
+        ? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+        : null;
       const key = bearer ?? xff ?? "anonymous";
 
       const now = Date.now();

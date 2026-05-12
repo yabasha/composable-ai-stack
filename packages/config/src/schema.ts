@@ -17,7 +17,7 @@ export const envSchema = z
     API_BEARER_TOKEN: z.string().min(32).optional(),
 
     WEBHOOK_TOLERANCE_SECONDS: z.coerce.number().int().positive().default(300),
-    API_PORT: z.coerce.number().int().positive().default(3001),
+    API_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
     LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info")
   })
   .superRefine((env, ctx) => {

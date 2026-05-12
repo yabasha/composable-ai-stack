@@ -60,8 +60,12 @@ export function middleware(req: NextRequest) {
     `base-uri 'self'`,
     `form-action 'self'`,
     `frame-ancestors 'none'`,
-    `upgrade-insecure-requests`
-  ].join("; ");
+    // Only emit in production; otherwise the browser would upgrade allowed
+    // http://localhost and ws://localhost endpoints and break local Convex/API.
+    isProd && `upgrade-insecure-requests`
+  ]
+    .filter(Boolean)
+    .join("; ");
 
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-nonce", nonce);

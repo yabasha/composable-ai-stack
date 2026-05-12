@@ -1,9 +1,25 @@
-import { internalMutation } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * Records a Stripe event ID. Returns true if newly recorded, false if duplicate
- * (the caller should treat false as "already processed; skip work").
+ * Read-only duplicate check, called BEFORE applying side effects so a failed
+ * apply can still be retried by Stripe (the marker is only written after
+ * `recordEvent` runs at the end of successful processing).
+ */
+export const hasProcessedEvent = internalQuery({
+  args: { eventId: v.string() },
+  handler: async (ctx, { eventId }) => {
+    const existing = await ctx.db
+      .query("processedStripeEvents")
+      .withIndex("by_event_id", (q) => q.eq("eventId", eventId))
+      .first();
+    return existing !== null;
+  }
+});
+
+/**
+ * Records a Stripe event ID after successful processing. Returns true if newly
+ * recorded, false if a concurrent delivery beat us to it.
  *
  * Convex has no unique-index constraint. This is a read-then-insert; concurrent
  * deliveries of the same event could race. Stripe retries are sequential in
