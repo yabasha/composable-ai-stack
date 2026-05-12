@@ -1,3 +1,9 @@
+/**
+ * NOTE: Hand-edited stop-gap. `convex codegen` was not runnable locally in
+ * this worktree (no CONVEX_DEPLOYMENT). The next real codegen run will
+ * regenerate this file from the function modules and may produce harmless
+ * formatting/import-style differences. Functionality is preserved.
+ */
 /* eslint-disable */
 /**
  * Generated `api` utility.
@@ -8,7 +14,10 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as stripe from "../stripe.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +26,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   http: typeof http;
+  stripe: typeof stripe;
+  users: typeof users;
 }>;
 
 /**

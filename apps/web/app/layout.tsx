@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   description: "A production-ready monorepo for building AI-powered applications"
 };
 
+// Nonce is wired through `x-nonce` by middleware.ts. Forks that render
+// `<Script>` tags should call `headers()` here and pass `nonce` to those tags,
+// which will switch this layout to dynamic rendering at that point.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">

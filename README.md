@@ -98,6 +98,21 @@ If you want a dedicated webhook gateway with custom middleware/rate limiting, us
 
 ---
 
+## Scaling the rate limiter
+
+`apps/api` ships an in-memory rate limiter (`apps/api/src/middleware/rate-limit.ts`).
+It tracks request counts in a single-process `Map`. For multi-worker or multi-instance
+deployments, replace the backing store with Redis or Upstash:
+
+1. Install: `bun add --filter=api @upstash/ratelimit @upstash/redis`
+2. Swap the `Map` in `rate-limit.ts` for an Upstash `Ratelimit` instance.
+3. Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in `.env`.
+
+The middleware exposes `X-RateLimit-Backend: memory` so you can verify which store
+is in use at runtime.
+
+---
+
 ## Scripts (root)
 - `bun run dev` — dev for all apps
 - `bun run dev:web` — Next.js only

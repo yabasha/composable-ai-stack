@@ -52,7 +52,8 @@ const PINS = {
     dependencies: {
       next: "16.1.6",
       react: "19.2.4",
-      "react-dom": "19.2.4"
+      "react-dom": "19.2.4",
+      zod: "3.23.8"
     },
     devDependencies: {
       tailwindcss: "4.1.18",
@@ -64,15 +65,31 @@ const PINS = {
   },
   api: {
     dependencies: {
-      elysia: "1.4.22"
+      elysia: "1.4.22",
+      "@elysiajs/cors": "1.4.2",
+      "@elysiajs/bearer": "1.4.4",
+      pino: "10.3.1"
+    },
+    devDependencies: {
+      "pino-pretty": "13.1.3"
     }
   },
   convex: {
     dependencies: {
-      convex: "1.31.6"
+      convex: "1.31.6",
+      "@convex-dev/auth": "0.0.92",
+      "@auth/core": "0.37.4",
+      stripe: "22.1.1"
     },
     devDependencies: {
-      typescript: "5.9.3"
+      typescript: "5.9.3",
+      "convex-test": "0.0.41"
+    }
+  },
+  config: {
+    dependencies: {
+      zod: "3.23.8",
+      dotenv: "16.4.7"
     }
   }
 } as const;
@@ -92,12 +109,15 @@ for (const [dep, ver] of Object.entries(PINS.web.dependencies)) {
   assertEq(`apps/web dependency ${dep}`, webPkg.dependencies?.[dep], ver);
 }
 for (const [dep, ver] of Object.entries(PINS.web.devDependencies)) {
-  assertEq(`apps/web devDependency ${dep}`, getDep(webPkg, dep), ver);
+  assertEq(`apps/web devDependency ${dep}`, webPkg.devDependencies?.[dep], ver);
 }
 
 const apiPkg = readJSON(join(ROOT, "apps", "api", "package.json"));
 for (const [dep, ver] of Object.entries(PINS.api.dependencies)) {
   assertEq(`apps/api dependency ${dep}`, apiPkg.dependencies?.[dep], ver);
+}
+for (const [dep, ver] of Object.entries(PINS.api.devDependencies)) {
+  assertEq(`apps/api devDependency ${dep}`, apiPkg.devDependencies?.[dep], ver);
 }
 
 const convexPkg = readJSON(join(ROOT, "apps", "convex", "package.json"));
@@ -105,7 +125,12 @@ for (const [dep, ver] of Object.entries(PINS.convex.dependencies)) {
   assertEq(`apps/convex dependency ${dep}`, convexPkg.dependencies?.[dep], ver);
 }
 for (const [dep, ver] of Object.entries(PINS.convex.devDependencies)) {
-  assertEq(`apps/convex devDependency ${dep}`, getDep(convexPkg, dep), ver);
+  assertEq(`apps/convex devDependency ${dep}`, convexPkg.devDependencies?.[dep], ver);
+}
+
+const configPkg = readJSON(join(ROOT, "packages", "config", "package.json"));
+for (const [dep, ver] of Object.entries(PINS.config.dependencies)) {
+  assertEq(`packages/config dependency ${dep}`, configPkg.dependencies?.[dep], ver);
 }
 
 console.log("✅ Version pins OK");

@@ -10,21 +10,32 @@ import { authTables } from "@convex-dev/auth/server";
 export default defineSchema({
   ...authTables,
 
-  // Extend the auth users table with app-specific fields.
-  // Default auth fields must be preserved explicitly.
   users: defineTable({
-    // --- Default @convex-dev/auth fields (must keep) ---
+    email: v.string(), // tightened from authTables (optional); required for Password+Stripe flow
+    tokenIdentifier: v.optional(v.string()),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
-    email: v.optional(v.string()),
-    emailVerificationTime: v.optional(v.number()),
+
+    // Convex Auth optional user fields (kept for compatibility with authTables).
     phone: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
-    // --- App-specific fields ---
+
     stripeCustomerId: v.optional(v.string()),
-    plan: v.optional(v.string()),          // e.g. "free" | "pro"
-    planStatus: v.optional(v.string()),    // e.g. "active" | "past_due" | "canceled"
-    createdAt: v.optional(v.number()),
-  }),
+    plan: v.optional(v.string()), // e.g. "free" | "pro"
+    planStatus: v.optional(v.string()), // e.g. "active" | "past_due" | "canceled"
+    planUpdatedAt: v.optional(v.number()),
+
+    createdAt: v.number()
+  })
+    .index("by_email", ["email"])
+    .index("by_token", ["tokenIdentifier"])
+    .index("by_stripe_customer", ["stripeCustomerId"]),
+
+  processedStripeEvents: defineTable({
+    eventId: v.string(),
+    type: v.string(),
+    processedAt: v.number()
+  }).index("by_event_id", ["eventId"])
 });

@@ -1,8 +1,17 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@acme/config": ["../../packages/config/src/index.ts"],
+      "@acme/config/schema": ["../../packages/config/src/schema.ts"]
+    }
+  },
   "include": [
     "convex",
     "**/*.ts",
     "**/*.tsx"
+  ],
+  "exclude": [
+    "convex/**/*.test.ts"
   ]
 }

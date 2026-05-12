@@ -27,6 +27,12 @@
       ],
       "@acme/ai": [
         "../../packages/ai/src/index.ts"
+      ],
+      "@acme/config": [
+        "../../packages/config/src/index.ts"
+      ],
+      "@acme/config/schema": [
+        "../../packages/config/src/schema.ts"
       ]
     }
   },
@@ -37,6 +43,7 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.test.ts"
   ]
 }
