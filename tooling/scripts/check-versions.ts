@@ -64,7 +64,13 @@ const PINS = {
   },
   api: {
     dependencies: {
-      elysia: "1.4.22"
+      elysia: "1.4.22",
+      "@elysiajs/cors": "1.4.2",
+      "@elysiajs/bearer": "1.4.4",
+      pino: "10.3.1"
+    },
+    devDependencies: {
+      "pino-pretty": "13.1.3"
     }
   },
   convex: {
@@ -108,6 +114,9 @@ for (const [dep, ver] of Object.entries(PINS.web.devDependencies)) {
 const apiPkg = readJSON(join(ROOT, "apps", "api", "package.json"));
 for (const [dep, ver] of Object.entries(PINS.api.dependencies)) {
   assertEq(`apps/api dependency ${dep}`, apiPkg.dependencies?.[dep], ver);
+}
+for (const [dep, ver] of Object.entries(PINS.api.devDependencies)) {
+  assertEq(`apps/api devDependency ${dep}`, getDep(apiPkg, dep), ver);
 }
 
 const convexPkg = readJSON(join(ROOT, "apps", "convex", "package.json"));
