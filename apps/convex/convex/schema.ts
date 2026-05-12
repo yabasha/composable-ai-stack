@@ -6,7 +6,7 @@ export default defineSchema({
   ...authTables,
 
   users: defineTable({
-    email: v.string(),
+    email: v.string(), // tightened from authTables (optional); required for Password+Stripe flow
     tokenIdentifier: v.optional(v.string()),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
@@ -32,5 +32,5 @@ export default defineSchema({
     eventId: v.string(),
     type: v.string(),
     processedAt: v.number()
-  }).index("by_eventId", ["eventId"])
+  }).index("by_event_id", ["eventId"])
 });
